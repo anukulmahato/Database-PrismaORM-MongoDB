@@ -1,0 +1,103 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
+}
+
+
+model users {
+  id String @id @default(auto()) @map("_id") @db.ObjectId
+  username String @unique
+  email String @unique
+  password String
+  fullName String?
+  bio String?
+  status Boolean @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Student {
+  id String @id @default(auto()) @map("_id") @db.ObjectId
+  name String
+  roll Int @unique
+  class String
+  status Boolean @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  result Result[]
+}
+
+model Result {
+  id String @id @default(auto()) @map("_id") @db.ObjectId
+  subject String
+  marks Int
+  grade String
+
+  studentId String @db.ObjectId
+  student Student @relation(fields: [studentId], references: [id])
+
+  status Boolean @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Product {
+  id String @id @default(auto()) @map("_id") @db.ObjectId
+  title String
+  price Int
+  stock Int
+  desc String
+
+  categoryId String @db.ObjectId
+  category Category @relation(fields: [categoryId], references: [id])
+
+  status Boolean @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Category {
+  id String @id @default(auto()) @map("_id") @db.ObjectId
+  title String
+
+  products Product[]
+  status Boolean @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Parsons {
+  id String @id @default(auto()) @map("_id") @db.ObjectId
+
+  name String
+
+  frout Frouts[]
+
+  status Boolean @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+}
+
+model Frouts {
+  id String @id @default(auto()) @map("_id") @db.ObjectId
+
+  froutName String @unique
+
+  parsonId String @db.ObjectId
+  parson Parsons @relation(fields: [parsonId], references: [id])
+
+  status Boolean @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
